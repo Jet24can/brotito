@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Brotito Vocacional</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  --ink:#2A2433; --paper:#FFFDF9; --panel:#FFFDF9; --soft:#6E6478; --line:rgba(123,92,196,.28);
+  --leaf:#6FA35A; --leaf2:#8CC26F; --blush:#F4A6B8; --earth:#8A6A4F;
+  --accent:#7B5CC4; --accent-ink:#fff; --tint:rgba(123,92,196,.12);
+  --R:#E0874F; --I:#4C8DD6; --A:#C760B5; --S:#4FAE7A; --E:#E5B437; --C:#7A7F96;
+  --display:'Baloo 2',ui-rounded,'Segoe UI',system-ui,sans-serif;
+  --body:'Nunito Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--panel:#241E34;--paper:#241E34;--ink:#F3EEFA;--soft:#B9AECB;--accent:#A88BF0;--accent-ink:#1E1830;--line:rgba(168,139,240,.35);--tint:rgba(168,139,240,.16)}}
+:root[data-theme="dark"]{--panel:#241E34;--paper:#241E34;--ink:#F3EEFA;--soft:#B9AECB;--accent:#A88BF0;--accent-ink:#1E1830;--line:rgba(168,139,240,.35);--tint:rgba(168,139,240,.16)}
+*,*::before,*::after{box-sizing:inherit}
+html,body{height:100%}
+body{margin:0;font-family:var(--body);color:var(--ink);background:var(--panel)}
+button{font:inherit;cursor:pointer;color:inherit}
+button:focus-visible,input:focus-visible{outline:3px solid #FFD66B;outline-offset:2px}
+#app{max-width:520px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;background:var(--panel)}
+
+#stage{position:relative;height:clamp(230px,36vh,320px);background:linear-gradient(#7EC4F0 0%,#B8E1F7 60%,#EAF6EC 100%);overflow:hidden;flex-shrink:0}
+#hill{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:30%}
+#chars{position:absolute;left:0;bottom:6%;width:46%;height:72%}
+#bubble{position:absolute;right:12px;top:14px;left:42%;background:#fff;color:#2A2433;border:2.5px solid #2A2433;border-radius:20px;padding:10px 12px;font-size:15px;line-height:1.4;font-weight:600;box-shadow:0 4px 0 rgba(42,36,51,.18);max-height:72%;overflow:auto}
+#bubble::after{content:"";position:absolute;left:-12px;bottom:22px;border:10px solid transparent;border-right-color:#2A2433}
+#bubble::before{content:"";position:absolute;left:-7px;bottom:24px;border:8px solid transparent;border-right-color:#fff;z-index:1}
+#topchips{position:absolute;left:12px;top:12px;display:flex;gap:6px}
+.chip{background:rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.6);border-radius:999px;padding:4px 10px;font-weight:700;font-size:13px;color:#2A2433}
+#voiceBtn{position:absolute;left:12px;bottom:10px;z-index:3}
+.breath{animation:breath 3.4s ease-in-out infinite;transform-origin:50% 100%;transform-box:fill-box}
+@keyframes breath{50%{transform:scaleY(1.025)}}
+.eye{animation:blink 5s infinite;transform-origin:center;transform-box:fill-box}
+@keyframes blink{0%,93%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+.sway{animation:sway 4s ease-in-out infinite;transform-origin:50% 100%;transform-box:fill-box}
+@keyframes sway{50%{transform:rotate(6deg)}}
+.grow{animation:grow .7s cubic-bezier(.3,1.6,.5,1) both;transform-origin:50% 100%;transform-box:fill-box}
+@keyframes grow{from{transform:scale(0)}}
+.hop{animation:hop .45s ease-out}
+@keyframes hop{40%{transform:translateY(-10px)}}
+
+#progress{height:6px;background:var(--tint)}
+#bar{height:100%;width:0;background:var(--leaf);transition:width .4s ease}
+#panel{flex:1;padding:18px 16px calc(24px + env(safe-area-inset-bottom,0px))}
+h1,h2{font-family:var(--display);line-height:1.15;margin:0 0 6px}
+h1{font-size:30px} h2{font-size:24px}
+.sub{color:var(--soft);margin:0 0 16px;line-height:1.5}
+.q{font-family:var(--display);font-weight:700;font-size:23px;line-height:1.25;margin:4px 0 16px;min-height:58px}
+.qnum{color:var(--soft);font-weight:700;font-size:13px}
+.btn{width:100%;border:0;border-radius:16px;padding:14px;background:var(--accent);color:var(--accent-ink);font-family:var(--display);font-weight:700;font-size:19px}
+.btn[disabled]{opacity:.45}
+.link{border:0;background:none;color:var(--soft);font-weight:700;padding:10px;width:100%}
+input[type=text],input[type=number]{width:100%;font:inherit;font-size:18px;padding:12px 14px;border-radius:14px;border:1.5px solid var(--line);background:transparent;color:var(--ink);margin-bottom:14px}
+.opts{display:grid;gap:8px;margin-bottom:16px}
+.opts.two{grid-template-columns:1fr 1fr}
+.opt{border:1.5px solid var(--line);background:transparent;border-radius:14px;padding:13px 12px;text-align:left;font-weight:700;font-size:15px;line-height:1.3}
+.opt[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.scale{display:grid;gap:8px}
+.scale .opt{display:flex;align-items:center;gap:12px;font-size:17px;padding:14px}
+.dot{width:26px;height:26px;border-radius:50%;flex-shrink:0;border:2px solid var(--ink);display:grid;place-items:center;font-size:14px}
+.row{display:flex;gap:8px;align-items:center;margin-top:12px}
+.mic{display:flex;align-items:center;justify-content:center;gap:8px;border:1.5px dashed var(--line);border-radius:14px;padding:11px;background:transparent;font-weight:700;width:100%;margin-top:10px}
+.mic.on{border-style:solid;background:var(--tint)}
+.hidden{display:none!important}
+.note{font-size:13px;color:var(--soft);line-height:1.45}
+
+/* informe */
+.code{display:flex;gap:8px;margin:10px 0 18px}
+.letter{flex:1;border-radius:16px;padding:10px 6px;text-align:center;color:#fff;font-family:var(--display)}
+.letter b{display:block;font-size:34px;line-height:1}
+.letter span{font-size:13px;font-weight:700}
+.bars{margin:6px 0 20px}
+.brow{display:grid;grid-template-columns:92px 1fr 38px;align-items:center;gap:8px;margin-bottom:8px;font-size:14px;font-weight:700}
+.track{height:12px;border-radius:99px;background:var(--tint);overflow:hidden}
+.fill{height:100%;border-radius:99px;width:0;transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.sec{margin:22px 0 0}
+.sec h3{font-family:var(--display);font-size:20px;margin:0 0 6px}
+.sec p{margin:0 0 8px;line-height:1.55}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag small{display:block;font-size:11px;color:var(--soft);font-weight:700}
+.tag{border:1.5px solid var(--line);border-radius:999px;padding:6px 11px;font-size:14px;font-weight:600}
+.warn{margin-top:22px;padding:12px 14px;border-radius:14px;background:var(--tint);font-size:14px;line-height:1.5}
+.actions{display:grid;gap:8px;margin-top:20px}
+.ghost{border:1.5px solid var(--line);background:transparent;border-radius:14px;padding:12px;font-weight:700}
+@media print{#stage,#progress,.actions,.noprint{display:none!important} body{background:#fff;color:#000}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="stage">
+    <div id="topchips"><span class="chip" id="stepChip">Hola</span></div>
+    <svg id="hill" viewBox="0 0 400 100" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 50 Q200 0 400 50 L400 100 L0 100Z" fill="var(--earth)"/>
+      <path d="M0 50 Q200 0 400 50" fill="none" stroke="var(--leaf)" stroke-width="7" vector-effect="non-scaling-stroke"/>
+    </svg>
+    <svg id="chars" viewBox="90 60 220 250" preserveAspectRatio="xMidYMax meet">
+      <g id="brotito">
+        <g class="breath">
+          <g class="sway">
+            <path d="M200 118 Q198 96 204 80" stroke="var(--leaf)" stroke-width="5" fill="none" stroke-linecap="round"/>
+            <g id="leaves"></g>
+          </g>
+          <path d="M200 116 C258 116 284 170 284 214 C284 262 248 292 200 292 C152 292 116 262 116 214 C116 170 142 116 200 116Z" fill="#FFFDF7" stroke="#2A2433" stroke-width="5"/>
+          <path d="M150 150 Q160 132 182 126" stroke="#fff" stroke-width="8" fill="none" stroke-linecap="round" opacity=".9"/>
+          <g class="eye"><ellipse cx="172" cy="200" rx="15" ry="18" fill="#2A2433"/><circle cx="177" cy="193" r="5.5" fill="#fff"/><circle cx="167" cy="207" r="2.5" fill="#fff"/></g>
+          <g class="eye"><ellipse cx="228" cy="200" rx="15" ry="18" fill="#2A2433"/><circle cx="233" cy="193" r="5.5" fill="#fff"/><circle cx="223" cy="207" r="2.5" fill="#fff"/></g>
+          <ellipse cx="150" cy="228" rx="14" ry="8" fill="var(--blush)" opacity=".8"/>
+          <ellipse cx="250" cy="228" rx="14" ry="8" fill="var(--blush)" opacity=".8"/>
+          <path id="mouthC" d="M190 232 Q200 242 210 232" stroke="#2A2433" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+          <ellipse id="mouthO" cx="200" cy="237" rx="8" ry="9" fill="#5A2E3E" stroke="#2A2433" stroke-width="3.5" class="hidden"/>
+          <path d="M126 236 Q104 246 108 262" stroke="#2A2433" stroke-width="5" fill="#FFFDF7" stroke-linecap="round"/>
+          <path d="M274 236 Q296 246 292 262" stroke="#2A2433" stroke-width="5" fill="#FFFDF7" stroke-linecap="round"/>
+          <ellipse cx="172" cy="294" rx="20" ry="10" fill="#FFFDF7" stroke="#2A2433" stroke-width="5"/>
+          <ellipse cx="228" cy="294" rx="20" ry="10" fill="#FFFDF7" stroke="#2A2433" stroke-width="5"/>
+        </g>
+      </g>
+    </svg>
+    <div id="bubble" aria-live="polite">¡Hola! Soy Brotito.</div>
+    <button class="chip" id="voiceBtn" aria-label="Activar o silenciar la voz">🔊 Voz</button>
+  </div>
+  <div id="progress"><div id="bar"></div></div>
+  <main id="panel"></main>
+</div>
+
+<script>
+// ================= CONTENIDO =================
+const TYPES = {
+  R:{n:"Realista",c:"var(--R)",short:"Hacer con las manos",
+     d:"Te gusta ver el resultado concreto de lo que hacés: arreglar, armar, construir, trabajar con herramientas, máquinas o al aire libre.",
+     car:[["Mecánica automotriz","c"],["Electricidad domiciliaria e industrial","c"],["Soldadura","c"],["Tecnicatura en electromecánica","t"],["Maestro mayor de obras","t"],["Ingeniería electromecánica","u"],["Ingeniería forestal","u"],["Agronomía","u"]]},
+  I:{n:"Investigador",c:"var(--I)",short:"Entender cómo funciona",
+     d:"Te atrae entender el porqué de las cosas: investigar, analizar, resolver problemas difíciles y aprender sobre ciencia o tecnología.",
+     car:[["Curso de programación","c"],["Tecnicatura en programación","t"],["Técnico de laboratorio","t"],["Licenciatura en sistemas","u"],["Medicina","u"],["Bioquímica","u"],["Biología","u"],["Física o Química","u"]]},
+  A:{n:"Artístico",c:"var(--A)",short:"Crear y expresar",
+     d:"Disfrutás crear algo propio y expresarte: dibujar, escribir, diseñar, actuar, hacer música, fotos o videos.",
+     car:[["Diseño gráfico o edición de video","c"],["Fotografía","c"],["Tecnicatura en diseño gráfico","t"],["Producción audiovisual","t"],["Arquitectura","u"],["Diseño industrial","u"],["Música","u"],["Letras","u"]]},
+  S:{n:"Social",c:"var(--S)",short:"Ayudar y acompañar",
+     d:"Te sale naturalmente ayudar, enseñar, escuchar y cuidar a otras personas. Te importa que a los demás les vaya bien.",
+     car:[["Auxiliar de enfermería o cuidador","c"],["Instructor deportivo","c"],["Enfermería","t"],["Profesorado","t"],["Psicología","u"],["Trabajo social","u"],["Kinesiología","u"],["Psicopedagogía","u"]]},
+  E:{n:"Emprendedor",c:"var(--E)",short:"Liderar y convencer",
+     d:"Te gusta tomar la iniciativa, convencer, vender ideas, liderar grupos y animarte a armar algo propio.",
+     car:[["Ventas y atención al cliente","c"],["Emprendimiento propio","c"],["Tecnicatura en marketing","t"],["Guía de turismo","t"],["Administración de empresas","u"],["Abogacía","u"],["Comercio exterior","u"],["Ciencia política","u"]]},
+  C:{n:"Organizador",c:"var(--C)",short:"Ordenar y planificar",
+     d:"Te sentís cómodo con el orden, los datos y los procesos claros: que todo cierre, que esté prolijo y bien organizado.",
+     car:[["Auxiliar administrativo","c"],["Liquidación de sueldos","c"],["Tecnicatura en administración","t"],["Tecnicatura en logística","t"],["Bibliotecología","t"],["Contador público","u"],["Recursos humanos","u"],["Escribanía","u"]]}
+};
+const PAIRS = {
+  RI:["Ingeniería electrónica o mecatrónica","Técnico de laboratorio","Robótica y automatización"],
+  RA:["Arquitectura","Diseño industrial","Carpintería y diseño de muebles"],
+  RS:["Educación física","Kinesiología","Guardaparque o bombero"],
+  RE:["Ingeniería industrial","Emprendimiento técnico propio (taller, servicio)"],
+  RC:["Higiene y seguridad","Agrimensura","Logística"],
+  IA:["Diseño de videojuegos","Diseño UX","Arquitectura"],
+  IS:["Medicina","Psicología","Nutrición"],
+  IE:["Economía","Sistemas con orientación a gestión"],
+  IC:["Ciencia de datos","Bioquímica","Actuario"],
+  AS:["Musicoterapia","Profesorado de arte","Comunicación social"],
+  AE:["Publicidad","Producción audiovisual","Marketing digital"],
+  AC:["Diseño editorial","Dibujo técnico y diseño de interiores"],
+  SE:["Abogacía","Recursos humanos","Turismo"],
+  SC:["Administración pública","Enfermería","Gestión escolar"],
+  EC:["Contador público","Administración de empresas","Comercio exterior"]
+};
+const ITEMS = [
+ ["R","Arreglar una bici, una moto o un aparato que no anda"],
+ ["I","Hacer experimentos para descubrir por qué pasa algo"],
+ ["A","Dibujar, pintar o diseñar algo"],
+ ["S","Explicarle a un compañero algo que no entiende"],
+ ["E","Vender algo y convencer a la gente de que lo compre"],
+ ["C","Llevar las cuentas de un negocio"],
+ ["R","Armar un circuito o hacer una instalación eléctrica"],
+ ["I","Resolver un problema de matemática o de lógica difícil"],
+ ["A","Escribir historias, poemas o canciones"],
+ ["S","Cuidar a alguien que está enfermo"],
+ ["E","Armar tu propio emprendimiento"],
+ ["C","Ordenar datos en una planilla para que todo quede prolijo"],
+ ["R","Trabajar al aire libre, en el campo o en el monte"],
+ ["I","Investigar cómo funciona el cuerpo humano"],
+ ["A","Actuar, cantar o tocar un instrumento"],
+ ["S","Escuchar a un amigo que tiene un problema y ayudarlo"],
+ ["E","Liderar un grupo y tomar las decisiones"],
+ ["C","Seguir un procedimiento paso a paso sin saltearte nada"],
+ ["R","Manejar máquinas o herramientas"],
+ ["I","Programar una app y buscar por qué falla"],
+ ["A","Sacar fotos o editar videos"],
+ ["S","Organizar una actividad solidaria"],
+ ["E","Hablar en público o presentar una idea"],
+ ["C","Controlar un stock o un inventario"],
+ ["R","Construir un mueble o algo de madera"],
+ ["I","Leer sobre el espacio, la naturaleza o la ciencia"],
+ ["A","Decorar un lugar o armar tu ropa con estilo propio"],
+ ["S","Trabajar con chicos"],
+ ["E","Negociar un precio o un acuerdo"],
+ ["C","Organizar horarios, agendas o turnos"]
+];
+const SCALE = [
+  {v:3,t:"¡Me encanta!",e:"😍",k:["encanta","re","mucho","muchísimo","sí sí"]},
+  {v:2,t:"Me gusta",e:"🙂",k:["gusta","sí","si","bastante"]},
+  {v:1,t:"Me da igual",e:"😐",k:["igual","más o menos","mas o menos","maso","no sé","no se","capaz"]},
+  {v:0,t:"No me gusta",e:"🙅",k:["no"]}
+];
+const VALORES = ["Ayudar a los demás","Ganar bien","Tener estabilidad","Crear cosas nuevas","Libertad de horarios","Contacto con la naturaleza","Aprender siempre","Que me reconozcan"];
+const MATERIAS = ["Matemática","Lengua","Biología","Física o Química","Historia o Geografía","Arte o Música","Educación Física","Informática o Taller","Inglés"];
+const HOBBIES = [
+  ["Videojuegos","IA"],["Hacer deporte","RS"],["Dibujar o hacer música","A"],["Arreglar o armar cosas","R"],
+  ["Leer","IA"],["Crear contenido en redes","AE"],["Ayudar o hacer voluntariado","S"],["Estar en el campo o con animales","RI"],
+  ["Cocinar","RA"],["Vender o hacer negocios","E"],["Usar la compu o programar","IC"],["Ordenar, coleccionar, planificar","C"]];
+const PLAN = [["estudiar","Seguir estudiando"],["trabajar","Salir a trabajar"],["ambas","Estudiar y trabajar"],["nose","Todavía no sé"]];
+const DUR = [["c","Algo corto: un curso u oficio (meses a 1 año)"],["t","Un terciario o tecnicatura (2 a 3 años)"],["u","Una carrera universitaria (4 a 6 años)"],["x","No sé, quiero ver opciones"]];
+const LUGAR = [["cerca","Quedarme en mi zona"],["mudar","Me podría mudar a otra ciudad"],["virtual","Prefiero estudiar a distancia"],["x","No lo pensé todavía"]];
+const NIVEL = {c:"Curso u oficio",t:"Terciario",u:"Universidad"};
+const SITUACION = ["Estoy en el secundario","Terminé el secundario","Estoy estudiando otra carrera","Estoy trabajando"];
+const REACT = {
+  3:["¡Uh, eso te encanta!","¡Mirá vos, qué lindo!","¡Anotado con estrellita!"],
+  2:["Bien, anotado.","Ajá, te gusta.","Buenísimo."],
+  1:["Ok, ni fu ni fa.","Anotado.","Tranqui, vale también."],
+  0:["Anotado, eso no es lo tuyo.","Perfecto, eso lo descartamos.","Está bien, no todo nos tiene que gustar."]
+};
+const pick = a=>a[Math.floor(Math.random()*a.length)];
+
+// ================= ESTADO =================
+const $ = s=>document.querySelector(s);
+const P = $("#panel");
+let S = {name:"",edad:"",situacion:"",materias:[],hobbies:[],plan:"",dur:"",lugar:"",answers:[],valores:[]};
+try{ const saved=JSON.parse(localStorage.getItem("brotito-voc")||"null"); if(saved) S=saved; }catch(e){}
+const save=()=>{ try{localStorage.setItem("brotito-voc",JSON.stringify(S));}catch(e){} };
+
+// ================= VOZ =================
+const HAS_TTS = ("speechSynthesis" in window) && ("SpeechSynthesisUtterance" in window);
+let voice=null, voiceOn=true, mouthT=null, lastText="", speakGen=0, keepAlive=null;
+function pickVoice(){ if(!HAS_TTS)return; const vs=speechSynthesis.getVoices(); if(!vs.length)return;
+  for(const p of ["es-AR","es-419","es-US","es-MX","es-ES"]){const v=vs.find(v=>v.lang.replace("_","-")===p); if(v){voice=v;return;}}
+  voice=vs.find(v=>v.lang.toLowerCase().startsWith("es"))||null; }
+if(HAS_TTS){ pickVoice(); speechSynthesis.onvoiceschanged=pickVoice; }
+function mouth(open){ $("#mouthO").classList.toggle("hidden",!open); $("#mouthC").classList.toggle("hidden",open); }
+function talkAnim(ms){
+  clearInterval(mouthT); let open=false; const end=Date.now()+ms;
+  mouthT=setInterval(()=>{ if(Date.now()>=end){ clearInterval(mouthT); mouth(false); return; } open=!open; mouth(open); },170);
+}
+function stopTalk(){ clearInterval(mouthT); clearInterval(keepAlive); mouth(false); }
+function voiceLabel(){ $("#voiceBtn").textContent = !HAS_TTS ? "🔇 Sin voz" : voiceOn ? "🔊 Voz" : "🔇 Silencio"; }
+// El primer toque "despierta" la voz (Chrome en Android lo necesita)
+let unlocked=false;
+function unlock(){ if(unlocked||!HAS_TTS) return; unlocked=true; try{ const u=new SpeechSynthesisUtterance(" "); u.volume=0; speechSynthesis.speak(u); }catch(e){} }
+document.addEventListener("pointerdown",unlock,{once:true});
+function say(text){
+  lastText=text;
+  $("#bubble").textContent=text;
+  const est=Math.min(12000,600+text.split(/\s+/).length*330);
+  if(!voiceOn||!HAS_TTS){ talkAnim(Math.min(est,2500)); return; }
+  const gen=++speakGen;
+  try{ speechSynthesis.cancel(); }catch(e){}
+  // frases cortas: Chrome corta las lecturas largas
+  const parts=text.replace(/[😍🙂😐🙅🌱🎙️]/g,"").match(/[^.!?¿¡]+[.!?]*|[¿¡][^?!]+[?!]/g)||[text];
+  // pequeña pausa después de cancel(): si no, Android a veces se traga lo siguiente
+  setTimeout(()=>{
+    if(gen!==speakGen) return;
+    talkAnim(est);
+    parts.map(t=>t.trim()).filter(Boolean).forEach((t,i,arr)=>{
+      const u=new SpeechSynthesisUtterance(t);
+      u.lang=voice?voice.lang:"es-AR"; if(voice)u.voice=voice; u.rate=.95; u.pitch=1.3;
+      if(i===arr.length-1) u.onend=()=>{ if(gen===speakGen) stopTalk(); };
+      u.onerror=()=>{ if(gen===speakGen) stopTalk(); };
+      try{ speechSynthesis.speak(u); }catch(e){}
+    });
+    // Chrome a veces "se duerme" a mitad de una lectura: lo despertamos
+    clearInterval(keepAlive);
+    keepAlive=setInterval(()=>{ if(!speechSynthesis.speaking){ clearInterval(keepAlive); return; } try{ speechSynthesis.resume(); }catch(e){} },4000);
+  },120);
+}
+function shutUp(){ speakGen++; try{ speechSynthesis.cancel(); }catch(e){} stopTalk(); }
+$("#voiceBtn").onclick=()=>{
+  if(!HAS_TTS){ $("#bubble").textContent="Este navegador no tiene voz, pero podés leer todo lo que te digo acá."; return; }
+  voiceOn=!voiceOn; voiceLabel();
+  if(voiceOn) say(lastText||"¡Listo, vuelvo a hablar!"); else shutUp();
+};
+voiceLabel();
+// tocar a Brotito repite lo último que dijo
+$("#chars").addEventListener("click",()=>{ if(lastText) say(lastText); });
+$("#chars").style.cursor="pointer";
+function hop(){ const b=$("#brotito"); b.classList.remove("hop"); void b.getBoundingClientRect(); b.classList.add("hop"); }
+
+// ================= MICRÓFONO (opcional) =================
+const SR = window.SpeechRecognition||window.webkitSpeechRecognition;
+let rec=null;
+function listen(onText, btn){
+  if(!SR) return;
+  if(rec){ try{ rec.abort(); }catch(e){} return; }   // segundo toque: cancelar
+  shutUp();
+  const label=t=>{ const s=btn.querySelector("span"); if(s) s.textContent=t; };
+  let got=false, done=false, timer=null;
+  const finish=msg=>{
+    if(done) return; done=true; clearTimeout(timer); rec=null;
+    btn.classList.remove("on"); label("Responder hablando");
+    if(msg) $("#bubble").textContent=msg;
+  };
+  const r=new SR(); rec=r;
+  r.lang="es-AR"; r.interimResults=true; r.maxAlternatives=3; r.continuous=false;
+  btn.classList.add("on"); label("Te escucho… (tocá para cancelar)");
+  $("#bubble").textContent="Te escucho… 👂";
+  r.onresult=e=>{
+    const res=e.results[e.results.length-1];
+    $("#bubble").textContent="“"+res[0].transcript+"”";
+    if(res.isFinal && !got){ got=true; finish(); onText([...res].map(a=>a.transcript.toLowerCase())); }
+  };
+  r.onerror=e=>{
+    const m={ "not-allowed":"No tengo permiso para usar el micrófono. Podés tocar las opciones, que es igual de rápido.",
+              "service-not-allowed":"Este navegador no me deja usar el micrófono. Tocá las opciones nomás.",
+              "no-speech":"No te escuché. Probá de nuevo hablando un poco más fuerte, o tocá una opción.",
+              "audio-capture":"No encuentro el micrófono del dispositivo. Tocá una opción.",
+              "network":"Para entender tu voz necesito internet. Tocá una opción y seguimos.",
+              "aborted":"" }[e.error];
+    if(["not-allowed","service-not-allowed","audio-capture","network"].includes(e.error)){ micBroken=true; btn.remove(); }
+    finish(m===undefined?"No te pude escuchar. Tocá una opción y seguimos.":m);
+  };
+  r.onend=()=>finish(got?"":"No te escuché. Probá de nuevo o tocá una opción.");
+  timer=setTimeout(()=>{ try{ r.stop(); }catch(e){} setTimeout(()=>finish("No te escuché. Probá de nuevo o tocá una opción."),1200); },9000);
+  setTimeout(()=>{ try{ r.start(); }catch(e){ finish("No pude activar el micrófono. Tocá una opción."); } },250);
+}
+function matchScale(t){
+  const W=w=>new RegExp("(^|[^a-záéíóúñü])("+w+")(?=$|[^a-záéíóúñü])");
+  const rules=[[1,W("me da igual|da igual|igual|m[aá]s o menos|maso|no s[eé]|capaz|ni fu ni fa")],
+               [0,W("no me gusta|no me encanta|para nada|odio|nada|no")],
+               [3,W("me encanta|encanta|me fascina|mucho|much[ií]simo|re s[ií]|me re gusta")],
+               [2,W("me gusta|gusta|s[ií]|bastante|bueno|dale")]];
+  for(const [v,re] of rules) if(re.test(t)) return SCALE.find(s=>s.v===v);
+  return null;
+}
+// Dentro de una vista embebida (como la vista previa de Claude) el micrófono no tiene permiso: no lo mostramos
+const IN_FRAME = (()=>{ try{ return window.self!==window.top; }catch(e){ return true; } })();
+let micBroken=false;
+function micButton(handler){
+  if(!SR || IN_FRAME || micBroken) return "";
+  return `<button class="mic" id="micBtn">🎙️ <span>Responder hablando</span></button>`;
+}
+
+// ================= BROTE QUE CRECE =================
+function leaves(n,animate){
+  const g=$("#leaves"); const cur=g.childElementCount; if(n===cur)return;
+  g.innerHTML="";
+  const spots=[[204,80,1],[201,96,-1],[203,88,1],[200,104,-1],[202,92,1],[199,100,-1],[204,84,-1]];
+  for(let i=0;i<Math.min(n,spots.length);i++){const [x,y,s]=spots[i];const p=document.createElementNS("http://www.w3.org/2000/svg","path");
+    const sz=12+i*1.5;p.setAttribute("d",`M${x} ${y} q${s*sz} ${-sz*.9} ${s*sz*1.9} ${-sz*.3} q${-s*sz*.8} ${sz} ${-s*sz*1.9} ${sz*.3}z`);
+    p.setAttribute("fill",i%2?"var(--leaf2)":"var(--leaf)");p.setAttribute("stroke","#2A2433");p.setAttribute("stroke-width","2.5");
+    if(animate&&i===n-1)p.classList.add("grow"); g.appendChild(p);}
+}
+function progress(p,label){ $("#bar").style.width=Math.round(p*100)+"%"; $("#stepChip").textContent=label; }
+
+// ================= PANTALLAS =================
+function welcome(){
+  progress(0,"Hola"); leaves(1);
+  const back=S.answers.length>0 && S.answers.length<ITEMS.length;
+  P.innerHTML=`
+    <h1>Descubrí qué te tira</h1>
+    <p class="sub">Brotito te va a hacer unas preguntas, como una charla, y al final te da un informe con tu perfil y carreras para explorar. Primero te conoce un poquito, así el resultado tiene más que ver con vos. Son unos 10 minutos y no te pide ningún dato personal.</p>
+    <button class="btn" id="go">${back?"Seguir donde quedé":"Empezar con Brotito"}</button>
+    ${back?`<button class="link" id="reset">Empezar de nuevo</button>`:""}
+    <p class="note" style="margin-top:14px">Esto es una orientación, no un diagnóstico. Lo ideal es charlar el resultado con un orientador vocacional o psicopedagogo.</p>`;
+  $("#bubble").textContent="¡Hola! Soy Brotito. Tocá el botón y arrancamos.";
+  $("#go").onclick=()=>{ if(back){ say(`¡Volviste, ${S.name}! Seguimos donde quedamos.`); item(S.answers.length); } else askName(); };
+  if(back) $("#reset").onclick=()=>{ S={name:"",edad:"",situacion:"",materias:[],hobbies:[],plan:"",dur:"",lugar:"",answers:[],valores:[]}; save(); askName(); };
+}
+function askName(){
+  progress(.03,"Conocernos");
+  say("¡Hola! Soy Brotito, una semillita que quiere ayudarte a descubrir qué te gusta. Para empezar, ¿cómo te llamás?");
+  P.innerHTML=`<h2>¿Cómo te llamás?</h2>
+    <input type="text" id="nm" maxlength="24" autocomplete="given-name" placeholder="Tu nombre" value="${S.name}">
+    <button class="btn" id="ok">Listo</button>${micButton()}`;
+  const ok=()=>{ const v=$("#nm").value.trim(); if(!v){$("#nm").focus();return;} S.name=v.charAt(0).toUpperCase()+v.slice(1); save(); askAge(); };
+  $("#ok").onclick=ok; $("#nm").onkeydown=e=>{if(e.key==="Enter")ok();};
+  if(SR) $("#micBtn").onclick=()=>listen(a=>{ const w=a[0].replace(/^(me llamo|soy|mi nombre es)\s+/,"").split(" ")[0]; $("#nm").value=w; ok(); },$("#micBtn"));
+}
+function askAge(){
+  progress(.06,"Conocernos"); hop();
+  say(`¡Qué lindo nombre, ${S.name}! ¿Cuántos años tenés?`);
+  P.innerHTML=`<h2>¿Cuántos años tenés?</h2>
+    <input type="number" id="ag" min="10" max="99" inputmode="numeric" placeholder="Edad" value="${S.edad}">
+    <button class="btn" id="ok">Listo</button>${micButton()}`;
+  const ok=()=>{ const v=parseInt($("#ag").value,10); if(!v||v<10||v>99){$("#ag").focus();return;} S.edad=v; save(); askSituacion(); };
+  $("#ok").onclick=ok; $("#ag").onkeydown=e=>{if(e.key==="Enter")ok();};
+  if(SR) $("#micBtn").onclick=()=>listen(a=>{ const m=a.join(" ").match(/\d+/); if(m){$("#ag").value=m[0];ok();} },$("#micBtn"));
+}
+function askSituacion(){
+  progress(.09,"Conocernos");
+  say("Perfecto. ¿Y en qué andás ahora?");
+  P.innerHTML=`<h2>¿En qué andás ahora?</h2><div class="opts">${SITUACION.map(s=>`<button class="opt" aria-pressed="${S.situacion===s}">${s}</button>`).join("")}</div>`;
+  P.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{ S.situacion=b.textContent; save(); askMaterias(); });
+}
+function askMaterias(){
+  progress(.12,"Conocernos"); hop();
+  say("¿Qué materias te gustan más? Podés elegir varias.");
+  P.innerHTML=`<h2>¿Qué materias te gustan?</h2><p class="sub">Elegí todas las que quieras.</p>
+    <div class="opts two">${MATERIAS.map(m=>`<button class="opt" aria-pressed="${S.materias.includes(m)}">${m}</button>`).join("")}</div>
+    <button class="btn" id="ok">Seguir</button>`;
+  P.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{ const on=b.getAttribute("aria-pressed")!=="true"; b.setAttribute("aria-pressed",on); });
+  $("#ok").onclick=()=>{ S.materias=[...P.querySelectorAll('.opt[aria-pressed="true"]')].map(b=>b.textContent); save(); askHobbies(); };
+}
+function askHobbies(){
+  progress(.10,"Conocernos");
+  say("¿Y qué te gusta hacer en tu tiempo libre? Elegí todo lo que quieras.");
+  P.innerHTML=`<h2>¿Qué hacés en tu tiempo libre?</h2><p class="sub">Elegí todas las que quieras.</p>
+    <div class="opts two">${HOBBIES.map(([h])=>`<button class="opt" aria-pressed="${(S.hobbies||[]).includes(h)}">${h}</button>`).join("")}</div>
+    <button class="btn" id="ok">Seguir</button>`;
+  P.querySelectorAll(".opt").forEach(b=>b.onclick=()=>b.setAttribute("aria-pressed",b.getAttribute("aria-pressed")!=="true"));
+  $("#ok").onclick=()=>{ S.hobbies=[...P.querySelectorAll('.opt[aria-pressed="true"]')].map(b=>b.textContent); save(); hop();
+    say(S.hobbies.length?"¡Qué lindo! Eso me dice un montón de vos.":"Tranqui, seguimos."); setTimeout(askPlan,1200); };
+}
+function single(title,sub,list,cur,onPick){
+  P.innerHTML=`<h2>${title}</h2>${sub?`<p class="sub">${sub}</p>`:""}<div class="opts">${list.map(([k,t])=>`<button class="opt" data-k="${k}" aria-pressed="${cur===k}">${t}</button>`).join("")}</div>`;
+  P.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{ P.querySelectorAll(".opt").forEach(x=>x.setAttribute("aria-pressed","false")); b.setAttribute("aria-pressed","true"); setTimeout(()=>onPick(b.dataset.k),180); });
+}
+function askPlan(){
+  progress(.12,"Tus planes");
+  say("Cuando termines esta etapa, ¿qué te gustaría hacer?");
+  single("¿Qué te gustaría hacer después?","No es una promesa, es lo que hoy sentís.",PLAN,S.plan,k=>{ S.plan=k; save(); askDur(); });
+}
+function askDur(){
+  progress(.13,"Tus planes");
+  say(S.plan==="trabajar"?"Bien. Si en algún momento estudiás algo, ¿qué te imaginás?":"¿Y cuánto tiempo te imaginás estudiando?");
+  single("¿Cuánto te imaginás estudiando?","",DUR,S.dur,k=>{ S.dur=k; save(); askLugar(); });
+}
+function askLugar(){
+  progress(.14,"Tus planes");
+  say("Última de estas: ¿dónde te imaginás estudiando o trabajando?");
+  single("¿Dónde te imaginás?","",LUGAR,S.lugar,k=>{ S.lugar=k; save(); introTest(); });
+}
+function introTest(){
+  progress(.15,"El juego"); leaves(2,true); hop();
+  say(`Genial, ${S.name}. Ahora viene lo divertido: te voy a decir cosas que se pueden hacer, y vos me decís cuánto te gustarían. No hay respuestas buenas ni malas. Respondé con lo primero que sientas.`);
+  P.innerHTML=`<h2>Ahora, el juego</h2><p class="sub">Son ${ITEMS.length} cosas cortitas. Imaginate haciéndolas y decime cuánto te gustarían, aunque nunca las hayas probado.</p>
+    <button class="btn" id="ok">¡Vamos!</button>`;
+  $("#ok").onclick=()=>item(0);
+}
+function item(i){
+  if(i>=ITEMS.length) return askValores();
+  const [t,txt]=ITEMS[i];
+  progress(.15+.7*(i/ITEMS.length),`${i+1} de ${ITEMS.length}`);
+  leaves(2+Math.floor(i/6), i%6===0 && i>0);
+  const pre = i===0 ? "Primera: ¿te gustaría " : i===ITEMS.length-1 ? "Última: ¿te gustaría " : "¿Te gustaría ";
+  say(pre+txt.charAt(0).toLowerCase()+txt.slice(1)+"?");
+  P.innerHTML=`<div class="qnum">${i+1} de ${ITEMS.length}</div>
+    <p class="q">¿Te gustaría ${txt.charAt(0).toLowerCase()+txt.slice(1)}?</p>
+    <div class="scale">${SCALE.map(s=>`<button class="opt" data-v="${s.v}" aria-pressed="${S.answers[i]===s.v}"><span class="dot">${s.e}</span>${s.t}</button>`).join("")}</div>
+    ${micButton()}
+    ${i>0?`<button class="link" id="back">← Volver a la anterior</button>`:""}`;
+  const answer=v=>{
+    S.answers[i]=v; S.answers.length=i+1; save(); hop();
+    const next=()=>item(i+1);
+    if(i===Math.floor(ITEMS.length/2)-1){ say(`¡Vamos por la mitad, ${S.name}! Lo estás haciendo re bien.`); setTimeout(next,2200); }
+    else if(Math.random()<.3){ say(pick(REACT[v])); setTimeout(next,1100); }
+    else next();
+  };
+  P.querySelectorAll(".scale .opt").forEach(b=>b.onclick=()=>{ P.querySelectorAll(".scale .opt").forEach(x=>x.setAttribute("aria-pressed","false")); b.setAttribute("aria-pressed","true"); answer(+b.dataset.v); });
+  if(i>0) $("#back").onclick=()=>item(i-1);
+  if(SR) $("#micBtn").onclick=()=>listen(alts=>{
+    const txt=alts.join(" | ");
+    const hit=matchScale(txt);
+    if(hit) answer(hit.v); else say("No te entendí bien. Decime: me encanta, me gusta, me da igual o no me gusta.");
+  },$("#micBtn"));
+}
+function askValores(){
+  progress(.88,"Lo que te importa"); leaves(7,true); hop();
+  say(`¡Terminaste el juego, ${S.name}! Una última cosita: de estas, ¿cuáles son las dos que más te importan para tu futuro?`);
+  P.innerHTML=`<h2>¿Qué te importa más?</h2><p class="sub">Elegí las dos más importantes para vos.</p>
+    <div class="opts two">${VALORES.map(v=>`<button class="opt" aria-pressed="${S.valores.includes(v)}">${v}</button>`).join("")}</div>
+    <button class="btn" id="ok" disabled>Ver mi informe</button>`;
+  const opts=[...P.querySelectorAll(".opt")];
+  const sync=()=>{ const sel=opts.filter(o=>o.getAttribute("aria-pressed")==="true"); $("#ok").disabled=sel.length!==2; };
+  opts.forEach(b=>b.onclick=()=>{ const on=b.getAttribute("aria-pressed")!=="true"; if(on&&opts.filter(o=>o.getAttribute("aria-pressed")==="true").length>=2)return; b.setAttribute("aria-pressed",on); sync(); });
+  sync();
+  $("#ok").onclick=()=>{ S.valores=opts.filter(o=>o.getAttribute("aria-pressed")==="true").map(o=>o.textContent); save(); thinking(); };
+}
+function thinking(){
+  progress(.96,"Pensando…");
+  say("Dame un segundito que estoy juntando todo lo que me contaste…");
+  P.innerHTML=`<h2>Brotito está pensando…</h2><p class="sub">Armando tu informe.</p>`;
+  setTimeout(report,2600);
+}
+
+// ================= INFORME =================
+function scores(){
+  const sc={R:0,I:0,A:0,S:0,E:0,C:0};
+  ITEMS.forEach(([t],i)=>{ sc[t]+=S.answers[i]||0; });
+  const max=ITEMS.filter(([t])=>t==="R").length*3;
+  return Object.entries(sc).map(([k,v])=>({k,v,p:Math.round(v/max*100)})).sort((a,b)=>b.v-a.v);
+}
+function report(){
+  progress(1,"Tu informe"); hop();
+  const sc=scores(); const top=sc.slice(0,3); const [a,b]=top;
+  const pairKey=[a.k,b.k].sort((x,y)=>"RIASEC".indexOf(x)-"RIASEC".indexOf(y)).join("");
+  const cruce=PAIRS[pairKey]||[];
+  const flat = sc[0].p-sc[5].p < 20;
+  const allLow = sc[0].p < 40;
+  const matTxt = S.materias.length ? `También me contaste que te gustan ${listar(S.materias.map(m=>m.toLowerCase()))}, y eso ${matchMaterias(a.k)?"coincide bastante con tu perfil":"suma otra pista para explorar"}.` : "";
+  let lectura = `Tu perfil más fuerte es <b>${TYPES[a.k].n}</b>, seguido de <b>${TYPES[b.k].n}</b> y <b>${TYPES[top[2].k].n}</b>. ${TYPES[a.k].d}`;
+  if(flat) lectura += " Tus puntajes están bastante parejos: eso suele pasar cuando todavía estás explorando, y está perfecto.";
+  if(allLow) lectura += " Respondiste con poco entusiasmo en general; puede que nada de esto te haya movido mucho todavía, o que estés en un momento de cansancio. Vale la pena repetirlo otro día.";
+
+  P.innerHTML=`
+    <h1>Tu informe, ${S.name}</h1>
+    <p class="sub">${S.edad} años · ${S.situacion||""}</p>
+    <div class="code">${top.map(t=>`<div class="letter" style="background:${TYPES[t.k].c}"><b>${t.k}</b><span>${TYPES[t.k].n}</span></div>`).join("")}</div>
+    <div class="bars">${sc.map(t=>`<div class="brow"><span>${TYPES[t.k].n}</span><div class="track"><div class="fill" style="background:${TYPES[t.k].c}" data-w="${t.p}"></div></div><span>${t.p}%</span></div>`).join("")}</div>
+
+    <div class="sec"><h3>Lo que dice de vos</h3><p>${lectura}</p><p>${TYPES[b.k].d}</p><p>${matTxt}</p></div>
+
+    ${hobbyTxt(sc)?`<div class="sec"><h3>Tus ratos libres</h3><p>${hobbyTxt(sc)}</p></div>`:""}
+    <div class="sec"><h3>Lo que te importa</h3><p>Elegiste <b>${S.valores.join("</b> y <b>")}</b>. ${valorTxt(S.valores)}</p></div>
+
+    <div class="sec"><h3>Carreras y oficios para explorar</h3>
+      ${cruce.length?`<p>Donde se cruzan tus dos perfiles más fuertes:</p><div class="tags">${cruce.map(c=>`<span class="tag" style="border-color:${TYPES[a.k].c}">${c}</span>`).join("")}</div>`:""}
+      <p style="margin-top:12px">Más del lado ${TYPES[a.k].n.toLowerCase()}:</p>${carList(a.k,5)}
+      <p style="margin-top:12px">Más del lado ${TYPES[b.k].n.toLowerCase()}:</p>${carList(b.k,4)}
+    </div>
+
+    <div class="sec"><h3>Tu camino</h3><p>${caminoTxt()}</p></div>
+    <div class="sec"><h3>Próximos pasos</h3>
+      <p>1. Elegí dos carreras de la lista y buscá su plan de estudios: mirá qué materias tiene.</p>
+      <p>2. Hablá con alguien que trabaje de eso y preguntale cómo es un día normal.</p>
+      <p>3. Si podés, visitá una facultad o instituto, o probá un taller o curso corto.</p>
+      <p>4. Llevá este informe a un orientador vocacional o al gabinete de tu escuela.</p>
+    </div>
+
+    <div class="warn">Este informe es orientativo y se basa en el modelo de intereses de Holland (RIASEC). No es un diagnóstico: los resultados deben ser revisados con un profesional de la orientación vocacional.</div>
+
+    <div class="actions">
+      <button class="btn" id="listen">Que Brotito me lo cuente</button>
+      <button class="ghost" id="share">Compartir resultado</button>
+      <button class="ghost" id="print">Guardar como PDF</button>
+      <button class="link" id="again">Hacer el test de nuevo</button>
+    </div>`;
+  requestAnimationFrame(()=>setTimeout(()=>P.querySelectorAll(".fill").forEach(f=>f.style.width=f.dataset.w+"%"),80));
+  const resumen=`${S.name}, terminamos. Tu perfil más fuerte es ${TYPES[a.k].n}: ${TYPES[a.k].short.toLowerCase()}. Después viene ${TYPES[b.k].n}: ${TYPES[b.k].short.toLowerCase()}. ${cruce.length?`Algo que podrías explorar es ${cruce[0].toLowerCase()}.`:""} Acordate que esto es una pista, no un destino. Lo más lindo es que vos decidís. Estoy muy orgulloso de vos.`;
+  say(resumen);
+  $("#listen").onclick=()=>say(resumen);
+  $("#print").onclick=()=>{ try{ window.print(); }catch(e){ alert("Abrí el link en Chrome para guardarlo como PDF."); } };
+  $("#share").onclick=async()=>{
+    const t=`Hice el test vocacional con Brotito 🌱\nMi perfil: ${top.map(x=>TYPES[x.k].n).join(", ")}\nPara explorar: ${(cruce.length?cruce:sortCars(a.k).map(c=>c[0])).slice(0,3).join(", ")}`;
+    try{ if(navigator.share){ await navigator.share({text:t}); return; } }catch(e){ return; }
+    try{ await navigator.clipboard.writeText(t); say("¡Listo! Lo copié para que lo pegues donde quieras."); }catch(e){ alert(t); }
+  };
+  $("#again").onclick=()=>{ S={...S,answers:[],valores:[]}; save(); introTest(); };
+}
+function sortCars(k){
+  const pref = S.dur && S.dur!=="x" ? S.dur : (S.plan==="trabajar" ? "c" : S.plan==="ambas" ? "t" : null);
+  const order = pref ? [pref, ...["c","t","u"].filter(x=>x!==pref)] : ["t","u","c"];
+  return [...TYPES[k].car].sort((x,y)=>order.indexOf(x[1])-order.indexOf(y[1]));
+}
+function carList(k,n){ return `<div class="tags">${sortCars(k).slice(0,n).map(([c,l])=>`<span class="tag">${c}<small>${NIVEL[l]}</small></span>`).join("")}</div>`; }
+function hobbyTxt(sc){
+  const hs=(S.hobbies||[]); if(!hs.length) return "";
+  const cnt={R:0,I:0,A:0,S:0,E:0,C:0};
+  hs.forEach(h=>{ const m=HOBBIES.find(x=>x[0]===h); if(m) [...m[1]].forEach(k=>cnt[k]++); });
+  const hk=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0];
+  const top3=sc.slice(0,3).map(t=>t.k);
+  return top3.includes(hk)
+    ? `Lo que hacés en tu tiempo libre (${listar(hs.map(h=>h.toLowerCase()))}) coincide con tu lado <b>${TYPES[hk].n.toLowerCase()}</b>. Cuando algo te gusta tanto que lo hacés sin que te lo pidan, es una pista fuerte.`
+    : `En tu tiempo libre aparece un lado <b>${TYPES[hk].n.toLowerCase()}</b> (${TYPES[hk].short.toLowerCase()}) que en el test salió más bajo. No lo descartes: a veces lo que hacemos por gusto también puede ser un camino.`;
+}
+function caminoTxt(){
+  const p={estudiar:"Querés seguir estudiando",trabajar:"Querés salir a trabajar",ambas:"Querés estudiar y trabajar a la vez",nose:"Todavía no sabés si estudiar o trabajar, y está perfecto"}[S.plan]||"";
+  const d={c:"Por eso te mostramos primero cursos y oficios cortos, que te permiten empezar a trabajar rápido.",
+           t:"Por eso te mostramos primero terciarios y tecnicaturas: son más cortos que la universidad y tienen buena salida laboral.",
+           u:"Por eso te mostramos primero carreras universitarias, sin dejar de lado opciones más cortas para ir probando.",
+           x:"Te mostramos opciones de distintos largos para que compares."}[S.dur]||"";
+  const l={cerca:"Como preferís quedarte en tu zona, averiguá qué institutos, universidades y centros de formación profesional hay cerca: muchas de estas opciones se dictan en ciudades chicas.",
+           mudar:"Como te podrías mudar, se te abren más opciones: compará planes de estudio de distintas ciudades y fijate si hay residencias o becas.",
+           virtual:"Como preferís estudiar a distancia, buscá la modalidad virtual: muchas tecnicaturas y carreras ya se pueden hacer así.",
+           x:"Pensar dónde te gustaría estar también ayuda a decidir: hacelo con calma."}[S.lugar]||"";
+  return `${p}. ${d} ${l}`.trim();
+}
+function listar(a){ return a.length<2?a.join(""):a.slice(0,-1).join(", ")+" y "+a[a.length-1]; }
+function matchMaterias(k){
+  const m={R:["Informática o Taller","Física o Química","Educación Física"],I:["Matemática","Biología","Física o Química","Informática o Taller"],A:["Arte o Música","Lengua"],S:["Lengua","Historia o Geografía","Educación Física"],E:["Historia o Geografía","Lengua","Inglés"],C:["Matemática","Informática o Taller"]};
+  return S.materias.some(x=>m[k].includes(x));
+}
+function valorTxt(v){
+  const t={ "Ayudar a los demás":"buscá carreras donde tu trabajo le cambie el día a alguien",
+    "Ganar bien":"mirá también la salida laboral y la demanda de cada carrera en tu zona",
+    "Tener estabilidad":"te pueden servir caminos con empleo formal o en relación de dependencia",
+    "Crear cosas nuevas":"te conviene un trabajo donde puedas proponer y no solo repetir",
+    "Libertad de horarios":"pensá en profesiones independientes o en emprender",
+    "Contacto con la naturaleza":"fijate en carreras que se trabajan afuera, no solo en oficina",
+    "Aprender siempre":"vas a disfrutar áreas que cambian rápido y te obligan a actualizarte",
+    "Que me reconozcan":"buscá lugares donde tu trabajo se vea y se valore" };
+  return "Eso quiere decir que "+v.map(x=>t[x]).join(", y además ")+".";
+}
+
+welcome();
+</script>
+</body>
+</html>
