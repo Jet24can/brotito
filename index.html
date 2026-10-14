@@ -89,10 +89,10 @@ input[type=text],input[type=number]{width:100%;font:inherit;font-size:18px;paddi
 .warn{margin-top:22px;padding:12px 14px;border-radius:14px;background:var(--tint);font-size:14px;line-height:1.5}
 .actions{display:grid;gap:8px;margin-top:20px}
 .ghost{border:1.5px solid var(--line);background:transparent;border-radius:14px;padding:12px;font-weight:700}
-.sponsor{margin-top:28px;padding-top:20px;border-top:1.5px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
-.sponsor img{height:96px;width:auto;max-width:220px;object-fit:contain}
-.sponsor b{display:block;font-family:var(--display);font-size:22px;line-height:1.2}
-.sponsor a{display:inline-block;margin-top:2px;color:var(--accent);font-weight:700;font-size:18px;text-decoration:none}
+.sponsor{margin-top:12px;padding-top:12px;border-top:1.5px solid var(--line);display:flex;flex-direction:row;align-items:center;justify-content:center;gap:12px;text-align:left}
+.sponsor img{height:64px;width:auto;max-width:110px;object-fit:contain;flex-shrink:0}
+.sponsor b{display:block;font-family:var(--display);font-size:19px;line-height:1.15}
+.sponsor a{display:inline-block;color:var(--accent);font-weight:700;font-size:16px;text-decoration:none}
 @media print{#stage,#progress,.actions,.noprint{display:none!important} body{background:#fff;color:#000}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -368,10 +368,10 @@ function welcome(){
   const back=S.answers.length>0 && S.answers.length<ITEMS.length;
   P.innerHTML=`
     <h1>Tu futuro empieza con una charla</h1>
-    <p class="sub">Brotito te va a hacer unas preguntas, como una charla, y al final te da un informe con tu perfil y carreras para explorar. Primero te conoce un poquito, así el resultado tiene más que ver con vos. Son unos 10 minutos y no te pide ningún dato personal.</p>
+    <p class="sub">Brotito te hace unas preguntas, como una charla, y al final te da un informe con tu perfil y carreras para explorar. Son unos 10 minutos y no te pide datos personales.</p>
     <button class="btn" id="go">${back?"Seguir donde quedé":"Empezar con Brotito"}</button>
     ${back?`<button class="link" id="reset">Empezar de nuevo</button>`:""}
-    <p class="note" style="margin-top:14px">Esto es una orientación, no un diagnóstico. Lo ideal es charlar el resultado con un orientador vocacional o psicopedagogo.</p>
+    <p class="note" style="margin-top:14px">Es una orientación, no un diagnóstico: lo ideal es charlar el resultado con un orientador vocacional.</p>
     ${FOOTER.nombre||FOOTER.ig?`<footer class="sponsor">
       ${FOOTER.logo?`<img src="${FOOTER.logo}" alt="${FOOTER.nombre}" onerror="this.remove()">`:""}
       <div>${FOOTER.nombre?`<b>${FOOTER.nombre}</b>`:""}${FOOTER.ig?`<a href="https://instagram.com/${FOOTER.ig}" target="_blank" rel="noopener">@${FOOTER.ig}</a>`:""}</div>
