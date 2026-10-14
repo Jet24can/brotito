@@ -466,6 +466,14 @@ function item(i){
   const answer=v=>{
     S.answers[i]=v; S.answers.length=i+1; save(); hop();
     const next=()=>item(i+1);
+    const run=S.answers.slice(-8);
+    if(!S.avisoIgual && run.length===8 && run.every(x=>x===v)){
+      S.avisoIgual=true; save();
+      say(v===1 ? `${S.name}, veo que a todo le respondés "me da igual". Probá cerrar los ojos un segundo e imaginarte haciéndolo de verdad: ¿te divertiría o te aburriría?`
+        : v===0 ? `${S.name}, veo que nada de esto te gusta, ¡y está bien! Igual probá imaginarte haciéndolo un ratito antes de responder.`
+        : `¡Te gusta todo, ${S.name}! Para que el resultado te sirva, probá separar lo que te encanta de lo que solo te gusta.`);
+      setTimeout(next,4200); return;
+    }
     if(i===Math.floor(ITEMS.length/2)-1){ say(`¡Vamos por la mitad, ${S.name}! Lo estás haciendo re bien.`); setTimeout(next,2200); }
     else if(Math.random()<.3){ say(pick(REACT[v])); setTimeout(next,1100); }
     else next();
@@ -506,7 +514,8 @@ function scores(){
 }
 function report(){
   progress(1,"Tu informe"); hop();
-  const sc=scores(); const top=sc.slice(0,3); const [a,b]=top;
+  const sc=scores();
+  if(sinDiferencias(sc)) return reportSinPerfil(sc); const top=sc.slice(0,3); const [a,b]=top;
   const pairKey=[a.k,b.k].sort((x,y)=>"RIASEC".indexOf(x)-"RIASEC".indexOf(y)).join("");
   const cruce=PAIRS[pairKey]||[];
   const flat = sc[0].p-sc[5].p < 20;
@@ -588,6 +597,50 @@ function caminoTxt(){
            virtual:"Como preferís estudiar a distancia, buscá la modalidad virtual: muchas tecnicaturas y carreras ya se pueden hacer así.",
            x:"Pensar dónde te gustaría estar también ayuda a decidir: hacelo con calma."}[S.lugar]||"";
   return `${p}. ${d} ${l}`.trim();
+}
+function esc(x){ return String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function sinDiferencias(sc){
+  const v=S.answers; const allSame=v.every(x=>x===v[0]);
+  return allSame || (sc[0].p - sc[5].p) <= 10 || sc[0].p < 25;
+}
+function reportSinPerfil(sc){
+  const v=S.answers, avg=v.reduce((a,b)=>a+b,0)/v.length;
+  const modo = avg<=0.6 ? "bajo" : avg>=2.4 ? "alto" : "parejo";
+  const txt={
+    bajo:{t:"Todavía no apareció lo tuyo",
+          p:"Respondiste que casi nada de esto te gusta. No pasa nada: puede que estas actividades no te representen, que hoy no sea un buen día, o que lo que te apasiona todavía no lo hayas probado.",
+          v:`${S.name}, parece que nada de esto te movió mucho. Está perfecto, no tenés que tenerla clara hoy. Lo importante es seguir probando cosas hasta que algo te haga brillar los ojos.`},
+    parejo:{t:"Tus respuestas salieron muy parejas",
+          p:"Respondiste casi todo igual, así que no puedo saber qué te tira más. Suele pasar cuando se contesta rápido, cuando hay cansancio, o cuando cuesta imaginarse haciendo esas cosas.",
+          v:`${S.name}, tus respuestas salieron muy parejas y así no te puedo decir qué te tira más. ¿Probamos de nuevo con calma? Imaginate de verdad haciendo cada cosa.`},
+    alto:{t:"¡Te gusta todo!",
+          p:"Te entusiasman casi todas las actividades. ¡Es una gran noticia! Pero para orientarte necesito saber qué es lo que más te gusta, no solo lo que te gusta.",
+          v:`¡${S.name}, te gusta todo! Eso es hermoso. Para ayudarte mejor, probá hacer el test de nuevo separando lo que te encanta de lo que solo te gusta.`}
+  }[modo];
+  // pistas desde el tiempo libre y las materias
+  const cnt={R:0,I:0,A:0,S:0,E:0,C:0};
+  (S.hobbies||[]).forEach(h=>{ const m=HOBBIES.find(x=>x[0]===h); if(m) [...m[1]].forEach(k=>cnt[k]++); });
+  const pist=Object.keys(cnt).filter(k=>cnt[k]>0).sort((a,b)=>cnt[b]-cnt[a]).slice(0,2);
+  P.innerHTML=`<h1>${txt.t}</h1>
+    <p class="sub">${esc(S.name)} · ${S.edad} años</p>
+    <div class="sec"><h3>Qué pasó</h3><p>${txt.p}</p><p>Por eso esta vez <b>no te muestro un perfil</b>: sería inventarlo, y no te serviría.</p></div>
+    ${pist.length?`<div class="sec"><h3>Una pista de lo que me contaste</h3>
+      <p>En tu tiempo libre te gusta ${listar((S.hobbies||[]).map(h=>h.toLowerCase()))}. Eso se acerca a un lado <b>${pist.map(k=>TYPES[k].n.toLowerCase()).join("</b> y <b>")}</b>.</p>
+      ${pist.map(k=>`<p style="margin-top:10px"><b>${TYPES[k].short}:</b></p>${carList(k,4)}`).join("")}</div>`:""}
+    <div class="sec"><h3>Qué podés hacer</h3>
+      <p>1. Hacé el test otro día, con tiempo y sin apuro.</p>
+      <p>2. Antes de responder cada pregunta, imaginate haciendo eso un día entero.</p>
+      <p>3. Probá actividades nuevas: un taller, un curso corto, ayudar a alguien en su trabajo.</p>
+      <p>4. Charlá con un orientador vocacional o con el gabinete de tu escuela: te pueden ayudar a encontrar lo tuyo.</p>
+    </div>
+    <div class="warn">Este test es una orientación, no un diagnóstico. Que no haya salido un perfil no dice nada malo de vos.</div>
+    <div class="actions">
+      <button class="btn" id="redo">Responder las 30 preguntas de nuevo</button>
+      <button class="ghost" id="again">Empezar un test nuevo (otra persona)</button>
+    </div>`;
+  say(txt.v);
+  $("#redo").onclick=()=>{ shutUp(); S={...S,answers:[],valores:[],avisoIgual:false}; save(); window.scrollTo(0,0); introTest(); };
+  $("#again").onclick=()=>{ shutUp(); S=BLANK(); save(); window.scrollTo(0,0); askName(); };
 }
 function listar(a){ return a.length<2?a.join(""):a.slice(0,-1).join(", ")+" y "+a[a.length-1]; }
 function matchMaterias(k){
