@@ -89,6 +89,10 @@ input[type=text],input[type=number]{width:100%;font:inherit;font-size:18px;paddi
 .warn{margin-top:22px;padding:12px 14px;border-radius:14px;background:var(--tint);font-size:14px;line-height:1.5}
 .actions{display:grid;gap:8px;margin-top:20px}
 .ghost{border:1.5px solid var(--line);background:transparent;border-radius:14px;padding:12px;font-weight:700}
+.sponsor{margin-top:28px;padding-top:16px;border-top:1.5px solid var(--line);display:flex;align-items:center;gap:12px}
+.sponsor img{height:52px;width:auto;max-width:120px;object-fit:contain}
+.sponsor b{display:block;font-size:15px}
+.sponsor a{color:var(--accent);font-weight:700;font-size:15px;text-decoration:none}
 @media print{#stage,#progress,.actions,.noprint{display:none!important} body{background:#fff;color:#000}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -229,7 +233,10 @@ const pick = a=>a[Math.floor(Math.random()*a.length)];
 // ================= ESTADO =================
 const $ = s=>document.querySelector(s);
 const P = $("#panel");
-let S = {name:"",edad:"",situacion:"",materias:[],hobbies:[],plan:"",dur:"",lugar:"",answers:[],valores:[]};
+const BLANK=()=>({name:"",edad:"",situacion:"",materias:[],hobbies:[],plan:"",dur:"",lugar:"",answers:[],valores:[]});
+let S = BLANK();
+// Pie de portada (logo e Instagram). Dejar vacío para no mostrarlo.
+const FOOTER = { logo:"logo-municipalidad.png", nombre:"Municipalidad de Eldorado", ig:"poloeducativo.eldorado" };
 try{ const saved=JSON.parse(localStorage.getItem("brotito-voc")||"null"); if(saved) S=saved; }catch(e){}
 const save=()=>{ try{localStorage.setItem("brotito-voc",JSON.stringify(S));}catch(e){} };
 
@@ -357,16 +364,21 @@ function progress(p,label){ $("#bar").style.width=Math.round(p*100)+"%"; $("#ste
 // ================= PANTALLAS =================
 function welcome(){
   progress(0,"Hola"); leaves(1);
+  if(S.answers.length>=ITEMS.length){ S=BLANK(); save(); }   // si el anterior ya terminó, arranca de cero
   const back=S.answers.length>0 && S.answers.length<ITEMS.length;
   P.innerHTML=`
-    <h1>Descubrí qué te tira</h1>
+    <h1>Tu futuro empieza con una charla</h1>
     <p class="sub">Brotito te va a hacer unas preguntas, como una charla, y al final te da un informe con tu perfil y carreras para explorar. Primero te conoce un poquito, así el resultado tiene más que ver con vos. Son unos 10 minutos y no te pide ningún dato personal.</p>
     <button class="btn" id="go">${back?"Seguir donde quedé":"Empezar con Brotito"}</button>
     ${back?`<button class="link" id="reset">Empezar de nuevo</button>`:""}
-    <p class="note" style="margin-top:14px">Esto es una orientación, no un diagnóstico. Lo ideal es charlar el resultado con un orientador vocacional o psicopedagogo.</p>`;
+    <p class="note" style="margin-top:14px">Esto es una orientación, no un diagnóstico. Lo ideal es charlar el resultado con un orientador vocacional o psicopedagogo.</p>
+    ${FOOTER.nombre||FOOTER.ig?`<footer class="sponsor">
+      ${FOOTER.logo?`<img src="${FOOTER.logo}" alt="${FOOTER.nombre}" onerror="this.remove()">`:""}
+      <div>${FOOTER.nombre?`<b>${FOOTER.nombre}</b>`:""}${FOOTER.ig?`<a href="https://instagram.com/${FOOTER.ig}" target="_blank" rel="noopener">@${FOOTER.ig}</a>`:""}</div>
+    </footer>`:""}`;
   $("#bubble").textContent="¡Hola! Soy Brotito. Tocá el botón y arrancamos.";
   $("#go").onclick=()=>{ if(back){ say(`¡Volviste, ${S.name}! Seguimos donde quedamos.`); item(S.answers.length); } else askName(); };
-  if(back) $("#reset").onclick=()=>{ S={name:"",edad:"",situacion:"",materias:[],hobbies:[],plan:"",dur:"",lugar:"",answers:[],valores:[]}; save(); askName(); };
+  if(back) $("#reset").onclick=()=>{ S=BLANK(); save(); askName(); };
 }
 function askName(){
   progress(.03,"Conocernos");
@@ -535,7 +547,7 @@ function report(){
       <button class="btn" id="listen">Que Brotito me lo cuente</button>
       <button class="ghost" id="share">Compartir resultado</button>
       <button class="ghost" id="print">Guardar como PDF</button>
-      <button class="link" id="again">Hacer el test de nuevo</button>
+      <button class="btn" id="again" style="background:var(--leaf)">Empezar un test nuevo</button>
     </div>`;
   requestAnimationFrame(()=>setTimeout(()=>P.querySelectorAll(".fill").forEach(f=>f.style.width=f.dataset.w+"%"),80));
   const resumen=`${S.name}, terminamos. Tu perfil más fuerte es ${TYPES[a.k].n}: ${TYPES[a.k].short.toLowerCase()}. Después viene ${TYPES[b.k].n}: ${TYPES[b.k].short.toLowerCase()}. ${cruce.length?`Algo que podrías explorar es ${cruce[0].toLowerCase()}.`:""} Acordate que esto es una pista, no un destino. Lo más lindo es que vos decidís. Estoy muy orgulloso de vos.`;
@@ -547,7 +559,7 @@ function report(){
     try{ if(navigator.share){ await navigator.share({text:t}); return; } }catch(e){ return; }
     try{ await navigator.clipboard.writeText(t); say("¡Listo! Lo copié para que lo pegues donde quieras."); }catch(e){ alert(t); }
   };
-  $("#again").onclick=()=>{ S={...S,answers:[],valores:[]}; save(); introTest(); };
+  $("#again").onclick=()=>{ shutUp(); S=BLANK(); save(); window.scrollTo(0,0); askName(); };
 }
 function sortCars(k){
   const pref = S.dur && S.dur!=="x" ? S.dur : (S.plan==="trabajar" ? "c" : S.plan==="ambas" ? "t" : null);
