@@ -173,38 +173,50 @@ const PAIRS = {
   SC:["Administración pública","Enfermería","Gestión escolar"],
   EC:["Contador público","Administración de empresas","Comercio exterior"]
 };
-const ITEMS = [
- ["R","Arreglar una bici, una moto o un aparato que no anda"],
- ["I","Hacer experimentos para descubrir por qué pasa algo"],
- ["A","Dibujar, pintar o diseñar algo"],
- ["S","Explicarle a un compañero algo que no entiende"],
- ["E","Vender algo y convencer a la gente de que lo compre"],
- ["C","Llevar las cuentas de un negocio"],
- ["R","Armar un circuito o hacer una instalación eléctrica"],
- ["I","Resolver un problema de matemática o de lógica difícil"],
- ["A","Escribir historias, poemas o canciones"],
- ["S","Cuidar a alguien que está enfermo"],
- ["E","Armar tu propio emprendimiento"],
- ["C","Ordenar datos en una planilla para que todo quede prolijo"],
- ["R","Trabajar al aire libre, en el campo o en el monte"],
- ["I","Investigar cómo funciona el cuerpo humano"],
- ["A","Actuar, cantar o tocar un instrumento"],
- ["S","Escuchar a un amigo que tiene un problema y ayudarlo"],
- ["E","Liderar un grupo y tomar las decisiones"],
- ["C","Seguir un procedimiento paso a paso sin saltearte nada"],
- ["R","Manejar máquinas o herramientas"],
- ["I","Programar una app y buscar por qué falla"],
- ["A","Sacar fotos o editar videos"],
- ["S","Organizar una actividad solidaria"],
- ["E","Hablar en público o presentar una idea"],
- ["C","Controlar un stock o un inventario"],
- ["R","Construir un mueble o algo de madera"],
- ["I","Leer sobre el espacio, la naturaleza o la ciencia"],
- ["A","Decorar un lugar o armar tu ropa con estilo propio"],
- ["S","Trabajar con chicos"],
- ["E","Negociar un precio o un acuerdo"],
- ["C","Organizar horarios, agendas o turnos"]
-];
+// ===== BANCO DE PREGUNTAS: 15 por perfil. En cada test se eligen 5 de cada uno y se mezclan. =====
+const BANCO = {
+ R:["Arreglar una bici, una moto o un aparato que no anda","Armar un circuito o hacer una instalación eléctrica","Trabajar al aire libre, en el campo o en el monte","Manejar máquinas o herramientas","Construir un mueble o algo de madera",
+    "Manejar un tractor o una máquina forestal","Trabajar en un aserradero o una carpintería","Plantar y cuidar una chacra o una huerta","Reparar el motor de un auto o de una motosierra","Soldar piezas de metal",
+    "Instalar paneles solares o una antena","Ayudar a construir una casa","Cuidar animales de granja","Armar o reparar una computadora","Hacer el mantenimiento de las máquinas de una fábrica"],
+ I:["Hacer experimentos para descubrir por qué pasa algo","Resolver un problema de matemática o de lógica difícil","Investigar cómo funciona el cuerpo humano","Programar una app y buscar por qué falla","Leer sobre el espacio, la naturaleza o la ciencia",
+    "Estudiar las plantas y los bichos del monte misionero","Analizar el agua de un arroyo para ver si está contaminada","Mirar cosas muy chiquitas por un microscopio","Descubrir la causa de una enfermedad","Investigar cómo mejorar la producción de yerba mate",
+    "Entender cómo funciona internet","Armar un robot y hacer que funcione","Analizar datos y sacar conclusiones","Averiguar cómo se formaron las Cataratas del Iguazú","Hacer preguntas hasta entender algo bien a fondo"],
+ A:["Dibujar, pintar o diseñar algo","Escribir historias, poemas o canciones","Actuar, cantar o tocar un instrumento","Sacar fotos o editar videos","Decorar un lugar o armar tu ropa con estilo propio",
+    "Diseñar el logo de un emprendimiento","Pintar un mural en una pared de tu barrio","Crear contenido para redes sociales","Diseñar los personajes de un videojuego","Bailar en un grupo o en un acto",
+    "Hacer artesanías con madera, semillas o cerámica","Imaginar cómo podría ser una casa y dibujar el plano","Grabar un cortometraje","Componer la música de una canción","Inventar la decoración para una fiesta"],
+ S:["Explicarle a un compañero algo que no entiende","Cuidar a alguien que está enfermo","Escuchar a un amigo que tiene un problema y ayudarlo","Organizar una actividad solidaria","Trabajar con chicos",
+    "Acompañar a personas mayores","Dar primeros auxilios a alguien que se lastimó","Enseñarle a alguien a usar el celular","Ayudar a resolver una pelea entre amigos","Entrenar a un equipo de chicos",
+    "Colaborar en un comedor o en una campaña del barrio","Ayudar a alguien que le cuesta aprender","Recibir y orientar a personas que llegan a un lugar nuevo","Cuidar la salud de la gente en una salita","Guiar a turistas y contarles sobre Misiones"],
+ E:["Vender algo y convencer a la gente de que lo compre","Armar tu propio emprendimiento","Liderar un grupo y tomar las decisiones","Hablar en público o presentar una idea","Negociar un precio o un acuerdo",
+    "Organizar una feria o un evento","Ser delegado o representante de tu curso","Abrir un local o un negocio en tu ciudad","Promocionar un producto en redes","Convencer a otros de sumarse a un proyecto",
+    "Exportar yerba o té a otros países","Armar un emprendimiento de turismo en Misiones","Conseguir auspiciantes para un evento","Ser el encargado de un equipo de trabajo","Presentar un proyecto ante autoridades"],
+ C:["Llevar las cuentas de un negocio","Ordenar datos en una planilla para que todo quede prolijo","Seguir un procedimiento paso a paso sin saltearte nada","Controlar un stock o un inventario","Organizar horarios, agendas o turnos",
+    "Archivar y ordenar documentos","Revisar que una factura esté bien hecha","Armar un presupuesto con todos los gastos","Llevar el registro de asistencia de un grupo","Controlar que se cumplan las normas de seguridad",
+    "Calcular los sueldos de los empleados","Organizar los recorridos de un camión de reparto","Cargar datos en una computadora sin errores","Planificar un viaje con todos los detalles","Ordenar una biblioteca o un depósito"]
+};
+const POR_PERFIL = 5;
+const TOTAL = POR_PERFIL * 6;
+function mezclar(a){ a=[...a]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function armarPreguntas(){
+  let qs=[];
+  for(const k of Object.keys(BANCO)) qs.push(...mezclar(BANCO[k]).slice(0,POR_PERFIL).map(t=>[k,t]));
+  // ordenar al azar sin que queden 2 del mismo perfil seguidas
+  for(let intento=0; intento<300; intento++){
+    const by={}; mezclar(qs).forEach(q=>(by[q[0]]=by[q[0]]||[]).push(q));
+    const out=[]; let last=null;
+    while(out.length<qs.length){
+      const ks=Object.keys(by).filter(k=>by[k].length && k!==last);
+      if(!ks.length) break;
+      const max=Math.max(...ks.map(k=>by[k].length));
+      const pool = (qs.length-out.length) <= 2*max ? ks.filter(k=>by[k].length===max) : ks; // al final, priorizar el que más queda
+      const k=pool[Math.floor(Math.random()*pool.length)];
+      out.push(by[k].pop()); last=k;
+    }
+    if(out.length===qs.length) return out;
+  }
+  return mezclar(qs);
+}
+
 const SCALE = [
   {v:3,t:"¡Me encanta!",e:"😍",k:["encanta","re","mucho","muchísimo","sí sí"]},
   {v:2,t:"Me gusta",e:"🙂",k:["gusta","sí","si","bastante"]},
@@ -364,8 +376,8 @@ function progress(p,label){ $("#bar").style.width=Math.round(p*100)+"%"; $("#ste
 // ================= PANTALLAS =================
 function welcome(){
   progress(0,"Hola"); leaves(1);
-  if(S.answers.length>=ITEMS.length){ S=BLANK(); save(); }   // si el anterior ya terminó, arranca de cero
-  const back=S.answers.length>0 && S.answers.length<ITEMS.length;
+  if(S.answers.length>=TOTAL || (S.answers.length && !(S.qs&&S.qs.length===TOTAL))){ S=BLANK(); save(); }   // si el anterior ya terminó, arranca de cero
+  const back=S.answers.length>0 && S.answers.length<TOTAL;
   P.innerHTML=`
     <h1>Tu futuro empieza con una charla</h1>
     <p class="sub">Brotito te hace unas preguntas, como una charla, y al final te da un informe con tu perfil y carreras para explorar. Son unos 10 minutos y no te pide datos personales.</p>
@@ -445,20 +457,21 @@ function askLugar(){
   single("¿Dónde te imaginás?","",LUGAR,S.lugar,k=>{ S.lugar=k; save(); introTest(); });
 }
 function introTest(){
+  if(!S.answers.length || !(S.qs&&S.qs.length===TOTAL)){ S.qs=armarPreguntas(); S.answers=[]; save(); }
   progress(.15,"El juego"); leaves(2,true); hop();
   say(`Genial, ${S.name}. Ahora viene lo divertido: te voy a decir cosas que se pueden hacer, y vos me decís cuánto te gustarían. No hay respuestas buenas ni malas. Respondé con lo primero que sientas.`);
-  P.innerHTML=`<h2>Ahora, el juego</h2><p class="sub">Son ${ITEMS.length} cosas cortitas. Imaginate haciéndolas y decime cuánto te gustarían, aunque nunca las hayas probado.</p>
+  P.innerHTML=`<h2>Ahora, el juego</h2><p class="sub">Son ${TOTAL} cosas cortitas. Imaginate haciéndolas y decime cuánto te gustarían, aunque nunca las hayas probado.</p>
     <button class="btn" id="ok">¡Vamos!</button>`;
   $("#ok").onclick=()=>item(0);
 }
 function item(i){
-  if(i>=ITEMS.length) return askValores();
-  const [t,txt]=ITEMS[i];
-  progress(.15+.7*(i/ITEMS.length),`${i+1} de ${ITEMS.length}`);
+  if(i>=TOTAL) return askValores();
+  const [t,txt]=S.qs[i];
+  progress(.15+.7*(i/TOTAL),`${i+1} de ${TOTAL}`);
   leaves(2+Math.floor(i/6), i%6===0 && i>0);
-  const pre = i===0 ? "Primera: ¿te gustaría " : i===ITEMS.length-1 ? "Última: ¿te gustaría " : "¿Te gustaría ";
+  const pre = i===0 ? "Primera: ¿te gustaría " : i===TOTAL-1 ? "Última: ¿te gustaría " : "¿Te gustaría ";
   say(pre+txt.charAt(0).toLowerCase()+txt.slice(1)+"?");
-  P.innerHTML=`<div class="qnum">${i+1} de ${ITEMS.length}</div>
+  P.innerHTML=`<div class="qnum">${i+1} de ${TOTAL}</div>
     <p class="q">¿Te gustaría ${txt.charAt(0).toLowerCase()+txt.slice(1)}?</p>
     <div class="scale">${SCALE.map(s=>`<button class="opt" data-v="${s.v}" aria-pressed="${S.answers[i]===s.v}"><span class="dot">${s.e}</span>${s.t}</button>`).join("")}</div>
     ${micButton()}
@@ -474,7 +487,7 @@ function item(i){
         : `¡Te gusta todo, ${S.name}! Para que el resultado te sirva, probá separar lo que te encanta de lo que solo te gusta.`);
       setTimeout(next,4200); return;
     }
-    if(i===Math.floor(ITEMS.length/2)-1){ say(`¡Vamos por la mitad, ${S.name}! Lo estás haciendo re bien.`); setTimeout(next,2200); }
+    if(i===Math.floor(TOTAL/2)-1){ say(`¡Vamos por la mitad, ${S.name}! Lo estás haciendo re bien.`); setTimeout(next,2200); }
     else if(Math.random()<.3){ say(pick(REACT[v])); setTimeout(next,1100); }
     else next();
   };
@@ -508,8 +521,8 @@ function thinking(){
 // ================= INFORME =================
 function scores(){
   const sc={R:0,I:0,A:0,S:0,E:0,C:0};
-  ITEMS.forEach(([t],i)=>{ sc[t]+=S.answers[i]||0; });
-  const max=ITEMS.filter(([t])=>t==="R").length*3;
+  (S.qs||[]).forEach(([t],i)=>{ sc[t]+=S.answers[i]||0; });
+  const max=POR_PERFIL*3;
   return Object.entries(sc).map(([k,v])=>({k,v,p:Math.round(v/max*100)})).sort((a,b)=>b.v-a.v);
 }
 function report(){
